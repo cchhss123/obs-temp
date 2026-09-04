@@ -1,0 +1,22 @@
+# OS metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Obsidian workspace / cache (避免頻繁開關分頁造成 git conflict)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache/
+.obsidian/plugins/*/data.json.tmp
+
+# Backup & temporary files
+*.tmp
+*.bak
+*~
+*.swp
+
+# Sensitive / environment files (安全防護)
+.env
+*.pem
+*.key
+credentials.json
