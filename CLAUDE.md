@@ -1,8 +1,8 @@
 # CLAUDE.md — {{PROJECT_NAME}} 專案工作知識庫
 
-> 這個 Obsidian vault 是 **{{PROJECT_NAME}}** 專案的知識管理庫。
+> 這個 Obsidian vault 是 **{{PROJECT_NAME}}** 的專屬知識管理大腦。
 > 負責記錄需求規劃、架構設計、技術決策 (ADR)、每日工作日誌與維運部署流程。
-> 供 AI 助手（Claude Code / Gemini / Cursor 等）輔助工作時快速載入完整脈絡，實現跨對話持續累積。
+> 供 AI 助手（Claude Code / Antigravity / Gemini / Cursor 等）輔助工作時快速載入完整脈絡，實現跨對話持續累積。
 
 ---
 
@@ -11,59 +11,75 @@
 | 項目 | 設定值 / 說明 |
 | :--- | :--- |
 | **專案名稱** | {{PROJECT_NAME}} |
+| **專案模式** | {{PROJECT_MODE_LABEL}} |
 | **專案定位** | [簡短描述專案目標與核心價值] |
 | **知識庫路徑** | `D:\_obs\obs-{{PROJECT_KEY}}` |
-| **程式碼路徑** | `D:\_giti3\{{PROJECT_KEY}}` 或 `D:\_gitc\{{PROJECT_KEY}}` |
-| **部署環境** | Docker / GCP VM / Cloudflare Pages / AWS |
-| **技術棧** | [例如：Python, PHP, Vue/React, PostgreSQL, Docker] |
+| **技術棧** | [例如：PHP, Python, Vue/React, PostgreSQL, Docker] |
+
+---
+
+## 關聯代碼倉庫 (Associated Git Repos)
+
+{{REPO_TABLE_MARKDOWN}}
 
 ---
 
 ## 目前進度
 
 **{{CURRENT_DATE}} (專案知識庫建立與初始化)**
-- 建立專案知識庫結構與 context 長期記憶系統。
-- 建立標準工作流規範與 AI 輔助開發指令。
+- 建立專案知識庫結構、context 長期記憶系統與標準模板庫。
+- 確立「知識庫 (Docs)」與「程式碼倉庫 (Multi-Repo)」物理隔離分工。
 
 ---
 
 ## 注意事項與工作流原則
 
-1. **職責分離**：
-   - 本庫（Obsidian Vault）專注於**需求、架構、日誌、決策與維運 SOP**。
-   - 程式碼、Docker 設定與自動化腳本存放於獨立的 **Git 倉庫**。
-2. **長期記憶結構**：
-   - 根目錄與 `_docs/` 僅保留 `待辦.md` 與 `工作日誌.md`（高頻動態維護）。
-   - 歷史資產統一收納於 `_docs/context/` 之 4 大分類，維持雙向連結。
-3. **代碼審查與 Commit**：
-   - AI 修改代碼僅留於本地工作區，所有 Git Commit 與 Push 必須由專案負責人審查後執行。
+1. **Hub-and-Spoke 雙層連動**：
+   - 本庫為 **{{PROJECT_NAME}}** 的「深度大腦 (Spoke)」，記錄所有代碼、API、DB 與測試細節。
+   - 每日結束工作時，產出 1~2 行「高階里程碑摘要」，回貼至 `workIdeax` 或 `obs-and`（總管理駕駛艙 Hub）。
+2. **Antigravity 多工作區協作 (Multi-Workspace)**：
+   - 建議在 Antigravity 同時掛載本知識庫以及上述關聯代碼倉庫。
+   - AI 可一邊查閱 `obs-{{PROJECT_KEY}}` 的實施計畫，一邊直接跨目錄編寫與驗證代碼。
+3. **長期記憶結構化**：
+   - 根目錄與 `_docs/` 僅保留 `待辦.md` 與 `工作日誌.md`。
+   - 歷史計畫與驗收報告收納於 `_docs/context/` 之 4 大板塊（`01_規劃`、`02_研究`、`03_驗證`、`04_維運`）。
+4. **代碼審查與 Commit**：
+   - AI 修改代碼僅留於本地工作區，所有 Git Commit 與 Push 必須由專案負責人審查後手動執行。
 
 ---
 
-## AI 輔助常用指令
+## AI 輔助常用指令庫
 
-### 1. 每次結束工作時（自動總結與歸檔）
+### 1. 每次結束工作時（自動總結與產出全域駕駛艙摘要）
 ```text
 請根據今天的對話與產出：
 1. 更新 CLAUDE.md 的「目前進度」
-2. 將今日詳細工作內容附加到 @_docs/工作日誌.md 最上方
+2. 將今日詳細技術工作內容附加到 @_docs/工作日誌.md 最上方
 3. 若有待辦異動，更新到 @_docs/待辦.md
 4. 若有重要技術架構決策，記錄到 @_docs/context/01_規劃與計畫/決策紀錄.md
+5. 在對話最後輸出「全域日誌摘要（1~2行）」，方便我複製回貼到 workIdeax 總駕駛艙。
 ```
 
 ### 2. 繼續上次工作時（快速恢復脈絡）
 ```text
 請依序讀取：
-1. CLAUDE.md（了解目前進度與專案定位）
+1. CLAUDE.md（了解目前進度、專案模式與代碼庫路徑）
 2. @_docs/待辦.md（了解進行中與待完成任務）
 3. @_docs/工作日誌.md（了解最近一次工作細節）
 確認理解目前專案狀態後，我們繼續進行下一步。
 ```
 
-### 3. Git-Diff 程式碼級精準脈絡還原
+### 3. 多 Repo 跨端代碼實作（Antigravity 模式）
 ```text
-請讀取程式碼倉庫 [填入代碼路徑] 的 Git 提交歷史：
-先執行 git log -n 5 獲取近期變更一覽，再讀取核心異動代碼（Diff），向我匯報還原的脈絡後開始討論。
+請參考 @_docs/context/01_規劃與計畫/ 下對應的 Plan 計畫書，
+直接在掛載的工作區中，跨目錄修改後端 API 與前端 UI 代碼。
+完成開發後，請執行驗證並整理代碼變更清單，產出 Walkthrough 驗收報告。
+```
+
+### 4. 多 Repo 代碼級精準脈絡還原 (Git-Diff 模式)
+```text
+請依序讀取各代碼倉庫的 Git 提交歷史：
+針對關聯的代碼路徑執行 git log -n 5 獲取近期變更一覽，再讀取核心異動代碼（Diff），向我匯報還原的脈絡後開始討論。
 ```
 
 ---
