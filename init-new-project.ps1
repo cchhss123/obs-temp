@@ -70,10 +70,11 @@ $ModeLabel = if ($Mode -eq "LegacyModule") {
 }
 
 # 建立多倉庫 Markdown 表格
+$targetNormalized = $TargetDir.Replace("\", "/")
 $RepoTableLines = @(
     "| 倉庫角色 | 本機 Git 路徑 | 職責與技術棧 |",
     "| :--- | :--- | :--- |",
-    "| **知識大腦** | `file:///$TargetDir` | 需求規劃、架構、日誌、ADR |"
+    "| **知識大腦** | [`$TargetDir`](file:///$targetNormalized) | 需求規劃、架構、日誌、ADR |"
 )
 
 for ($i = 0; $i -lt $RepoPaths.Count; $i++) {
