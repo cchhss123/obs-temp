@@ -74,7 +74,7 @@ $targetNormalized = $TargetDir.Replace("\", "/")
 $RepoTableLines = @(
     "| 倉庫角色 | 本機 Git 路徑 | 職責與技術棧 |",
     "| :--- | :--- | :--- |",
-    "| **知識大腦** | [`$TargetDir`](file:///$targetNormalized) | 需求規劃、架構、日誌、ADR |"
+    "| **知識大腦** | [``$TargetDir``](file:///$targetNormalized) | 需求規劃、架構、日誌、ADR |"
 )
 
 for ($i = 0; $i -lt $RepoPaths.Count; $i++) {
@@ -85,7 +85,7 @@ for ($i = 0; $i -lt $RepoPaths.Count; $i++) {
     } else {
         "代碼庫 $($i + 1)"
     }
-    $RepoTableLines += "| **$roleName** | [`$p`](file:///$pNormalized) | 業務邏輯實作與測試 |"
+    $RepoTableLines += "| **$roleName** | [``$p``](file:///$pNormalized) | 業務邏輯實作與測試 |"
 }
 $RepoTableMarkdown = $RepoTableLines -join "`r`n"
 
