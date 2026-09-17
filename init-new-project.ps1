@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     一鍵從 obs-temp 建立全新專案的 Obsidian 知識庫 Vault（支援全新專案與舊系統擴充雙模式、多代碼倉庫綁定）。
 
