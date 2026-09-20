@@ -1,0 +1,78 @@
+#!/usr/bin/env python3
+"""
+deploy_template.py.sample — 遠端部署與快取重啟標準範本
+
+【使用說明】
+1. 複製此檔案為 `deploy_[role].py`（例如 `deploy_backend.py` 或 `deploy_web.py`）。
+2. 根據專案實際主機資訊、容器名稱、目錄映射修改下方的配置變數。
+3. 此範本依賴 paramiko（若主機具備）或透過標準 subprocess 呼叫本機 ssh / scp / rsync。
+4. 本腳本遵循「備份 ➔ 上傳 ➔ 語法檢查 ➔ 容器重啟/快取刷新 ➔ 冒煙驗收」標準五部曲。
+"""
+
+import os
+import subprocess
+import sys
+import time
+
+# ==========================================
+# 專案環境與主機配置 (請依專案調整)
+# ==========================================
+SSH_HOST = "10.11.12.176"
+SSH_USER = "app_user"
+REMOTE_APP_DIR = "/data/projects/my_app"
+LOCAL_BUILD_DIR = r"D:\_giti3\my_app_repo\dist"
+DOCKER_CONTAINER_NAME = "my_app_container"
+
+# ==========================================
+# 部署流程實作
+# ==========================================
+def run_cmd(cmd: str, check: bool = True):
+    print(f"👉 執行本機指令: {cmd}")
+    res = subprocess.run(cmd, shell=True)
+    if check and res.returncode != 0:
+        raise RuntimeError(f"指令執行失敗 (Exit code: {res.returncode}): {cmd}")
+
+def run_ssh_cmd(remote_cmd: str):
+    print(f"🌐 執行遠端指令: {remote_cmd}")
+    ssh_cmd = f"ssh {SSH_USER}@{SSH_HOST} \"{remote_cmd}\""
+    res = subprocess.run(ssh_cmd, shell=True)
+    if res.returncode != 0:
+        raise RuntimeError(f"遠端指令失敗: {remote_cmd}")
+
+def deploy():
+    print("==================================================")
+    print("🚀 開始執行自動化部署程序")
+    print(f"   目標主機: {SSH_HOST}")
+    print(f"   遠端路徑: {REMOTE_APP_DIR}")
+    print("==================================================")
+
+    # 步驟 1: 遠端備份既有版本
+    ts = time.strftime("%Y%m%d_%H%M%S")
+    backup_dir = f"{REMOTE_APP_DIR}_bak_{ts}"
+    print(f"\n[1/5] 建立遠端備份: {backup_dir}")
+    run_ssh_cmd(f"if [ -d {REMOTE_APP_DIR} ]; then cp -r {REMOTE_APP_DIR} {backup_dir}; fi")
+
+    # 步驟 2: 同步檔案至遠端 (可使用 scp 或 rsync)
+    print("\n[2/5] 同步建構產物至遠端...")
+    run_cmd(f"scp -r {LOCAL_BUILD_DIR}/* {SSH_USER}@{SSH_HOST}:{REMOTE_APP_DIR}/")
+
+    # 步驟 3: 遠端語法檢查 (例如 PHP 檢查語法，或 Node 測試加載)
+    print("\n[3/5] 執行遠端語法與配置驗證...")
+    # run_ssh_cmd(f"find {REMOTE_APP_DIR} -name '*.php' -exec php -l {{}} \\; | grep -v 'No syntax errors'")
+
+    # 步驟 4: Docker 容器重啟與快取清理
+    print(f"\n[4/5] 重啟服務容器: {DOCKER_CONTAINER_NAME}...")
+    run_ssh_cmd(f"docker restart {DOCKER_CONTAINER_NAME}")
+
+    # 步驟 5: 執行健康檢查冒煙驗證
+    print("\n[5/5] 執行上線健康檢查...")
+    # run_cmd(f"python _tools/probe_health.py http://{SSH_HOST}/api/health")
+
+    print("\n🎉 部署流程順利完成！")
+
+if __name__ == "__main__":
+    try:
+        deploy()
+    except Exception as e:
+        print(f"\n❌ 部署過程遭遇異常: {e}", file=sys.stderr)
+        sys.exit(1)

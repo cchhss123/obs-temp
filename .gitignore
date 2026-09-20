@@ -15,8 +15,29 @@ desktop.ini
 *~
 *.swp
 
-# Sensitive / environment files (安全防護)
+# Python cache (_tools)
+__pycache__/
+*.pyc
+*.pyo
+
+# Sensitive credentials & network profiles (資安深度防護)
 .env
 *.pem
 *.key
+*.p12
+*.pfx
+*.crt
+*.ovpn
+*.id_rsa
+*.id_ed25519
 credentials.json
+*_local_credentials.md
+*_secret*.md
+
+# Large binary archives (避免大檔案污染版控，原始檔案建議放 NAS 或外部存儲)
+*.zip
+*.tar.gz
+*.tgz
+*.iso
+*.7z
+*.rar
